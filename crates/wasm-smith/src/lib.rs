@@ -80,18 +80,7 @@ pub(crate) fn arbitrary_loop<'a>(
     max: usize,
     mut f: impl FnMut(&mut Unstructured<'a>) -> Result<bool>,
 ) -> Result<()> {
-    assert!(max >= min);
-    for _ in 0..min {
-        if !f(u)? {
-            return Err(arbitrary::Error::IncorrectFormat);
-        }
-    }
-    for _ in 0..(max - min) {
-        let keep_going = u.arbitrary().unwrap_or(false);
-        if !keep_going {
-            break;
-        }
-
+    for _ in 0..u.int_in_range(min..=max)? {
         if !f(u)? {
             break;
         }
